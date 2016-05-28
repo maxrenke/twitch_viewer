@@ -19,7 +19,10 @@ Install Python 2.7
 
 Place twitch.py, tw.bat, and ls.bat in your User Directory (Windows)
 
-Modify twitch.py with your oauth code (empty in repository)
+Modify twitch.py with your username and place it where [USERNAME] is
+
+Modify twitch.py with your oauth code (empty in repository) and place it where [OAUTHCODE] is
+
 # Usage
 
 From run or command line type 'tw' OR 'python twitch.py'
