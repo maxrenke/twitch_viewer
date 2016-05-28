@@ -15,7 +15,7 @@ Install VLC
 
 Install Livestreamer
 
-Install Python 2.7
+Install Python 2.7 (the script requries Python 2.7, you can add this to your PATH in Windows)
 
 Place twitch.py, tw.bat, and ls.bat in your User Directory (Windows)
 
@@ -31,7 +31,7 @@ You can select one or more than one stream. They will open up in separate instan
 
 # Configuration
 
-You need to add your oauth code to the twitch.py script.
+You need to add your oauth code to the twitch.py script (you can get the oauth code [here](https://twitchapps.com/tmi/))
 
 You may want to change how ls.bat works, I have it hard coded for 'source' quality
 
