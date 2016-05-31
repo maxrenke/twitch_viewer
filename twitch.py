@@ -1,5 +1,5 @@
 import urllib, json, os, subprocess
-url = "https://api.twitch.tv/kraken/users/[USERNAME]/follows/channels?oauth_token=oauth:[OATHCODE]"
+url = "https://api.twitch.tv/kraken/users/[USERNAME]/follows/channels?limit=100?oauth_token=oauth:[OATHCODE]"
 response = urllib.urlopen(url)
 data = json.loads(response.read())
 follows = data['follows']
