@@ -23,6 +23,10 @@ Modify twitch.py with your username and place it where [USERNAME] is
 
 Modify twitch.py with your oauth code (empty in repository) and place it where [OAUTHCODE] is
 
+Modify twitch.py with your client id and place it where [CLIENTID] is
+
+Modify your local livestreamer config file (%appdata%\livestreamer) and add the line at the end of the file with the line at the end of the example in this repository. This will need to include your [OAUTHCODE]
+
 # Usage
 
 From run or command line type 'tw' OR 'python twitch.py'
