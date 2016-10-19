@@ -1,4 +1,4 @@
-import urllib, json, os, subprocess
+import urllib, json, os, subprocess, string
 url = "https://api.twitch.tv/kraken/users/[USERNAME]/follows/channels?limit=100?oauth_token=oauth:[OAUTH_TOKEN]&client_id=[CLIENT_ID]"
 response = urllib.urlopen(url)
 data = json.loads(response.read())
@@ -14,7 +14,10 @@ for i in follows:
 	if not (n_string==None):
 		n_viewers = n_string['viewers']
 		n_game = n_string['game']
-		print "[",count,"] ",name,"-",n_game,"-",n_viewers
+		n_channel = n_string['channel']
+		n_title = n_channel['status']
+		filtered_n_title = filter(lambda x: x in string.printable, n_title)
+		print "[",count,"] ",name,"-",filtered_n_title,"-",n_game,"-",n_viewers
 		names.append(name)
 		count = count + 1
 selection = raw_input("Select stream(s): ")
