@@ -17,8 +17,10 @@ for i in follows:
 		n_channel = n_string['channel']
 		n_title = n_channel['status']
 		filtered_n_title = filter(lambda x: x in string.printable, n_title)
-		print "[",count,"] ",name,"-",filtered_n_title,"-",n_game,"-",n_viewers
-		names.append(name)
+		if (n_string['stream_type']=='live'):
+			if 'rerun' not in filtered_n_title.lower():
+				print "[",count,"] ",name,"-",filtered_n_title,"-",n_game,"-",n_viewers
+				names.append(name)
 		count = count + 1
 selection = raw_input("Select stream(s): ")
 words = selection.split()
