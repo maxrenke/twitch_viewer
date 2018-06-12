@@ -26,6 +26,5 @@ selection = raw_input("Select stream(s): ")
 words = selection.split()
 wordString = "/"
 for w in words:
-	#subprocess.call('start ls ' + names[int(w)-1] + ' best', shell=True)
+	subprocess.call('start ls ' + names[int(w)-1] + ' 720p', shell=True)
 	wordString = wordString + names[int(w)-1] + "/";
-subprocess.call('start chrome --new-window multitwitch.tv' + wordString, shell=True)
