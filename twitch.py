@@ -21,7 +21,7 @@ for i in follows:
 			if 'rerun' not in filtered_n_title.lower():
 				print "[",count,"] ",name,"-",filtered_n_title,"-",n_game,"-",n_viewers
 				names.append(name)
-		count = count + 1
+				count = count + 1
 selection = raw_input("Select stream(s): ")
 words = selection.split()
 wordString = "/"
