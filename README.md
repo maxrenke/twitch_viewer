@@ -3,7 +3,7 @@ python script to integrate with livestreamer on Windows
 
 Twitch Oauth Code - https://twitchapps.com/tmi/
 
-Livestreamer - http://docs.livestreamer.io/
+Streamlink - https://github.com/streamlink/streamlink
 
 Python 2.7 - https://www.python.org/download/releases/2.7/
 
@@ -13,19 +13,13 @@ VLC - http://www.videolan.org/vlc/index.html
 
 Install VLC
 
-Install Livestreamer
+Install Streamlink
 
 Install Python 2.7 (the script requries Python 2.7, you can add this to your PATH in Windows)
 
 Place twitch.py, tw.bat, and ls.bat in your User Directory (Windows)
 
-Modify twitch.py with your username and place it where [USERNAME] is
-
-Modify twitch.py with your oauth code (empty in repository) and place it where [OAUTHCODE] is
-
-Modify twitch.py with your client id and place it where [CLIENTID] is
-
-Modify your local livestreamer config file (%appdata%\livestreamer) and add the line at the end of the file with the line at the end of the example in this repository. This will need to include your [OAUTHCODE]
+Add your client ID to twitch.py and your OAUTHTOKEN token to ls.bat
 
 # Usage
 
@@ -35,7 +29,7 @@ You can select one or more than one stream. They will open up in separate instan
 
 # Configuration
 
-You need to add your oauth code to the twitch.py script (you can get the oauth code [here](https://twitchapps.com/tmi/))
+You need to add your oauth code to ls.bat script (you can get the oauth code [here](https://twitchapps.com/tmi/))
 
 You may want to change how ls.bat works, I have it hard coded for 'source' quality
 
