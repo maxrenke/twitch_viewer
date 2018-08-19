@@ -40,9 +40,9 @@ names = sorted(names, key=lambda name: name[0], reverse=True)
 i = 1
 for name in names:
 	if i < 10:
-		print "[ ",i,"]",str(name[1])
+		print "[ ",i,"]",name[1].encode('utf-8')
 	else:
-		print "[",i,"]",str(name[1])
+		print "[",i,"]",name[1].encode('utf-8')
 	i = i + 1
 	
 print "---------------------\n-- Popular Streams --\n---------------------"
