@@ -25,7 +25,7 @@ while len(follows) > 0:
 			filtered_n_title = filter(lambda x: x in string.printable, n_title)
 			if (n_string['stream_type']=='live'):
 				if 'rerun' not in filtered_n_title.lower():
-					n_output = name + "-" + filtered_n_title + "-" + n_game + "-" + str(n_viewers)
+					n_output = name + " - " + filtered_n_title + " - " + n_game + " - " + str(n_viewers)
 					names.append([n_viewers, n_output, name])
 					count = count + 1
 	
@@ -64,7 +64,7 @@ for i in streams:
 		filtered_n_title = filter(lambda x: x in string.printable, n_title)
 		if (n_string['stream_type']=='live'):
 			if 'rerun' not in filtered_n_title.lower():
-				n_output = name + "-" + filtered_n_title + "-" + n_game + "-" + str(n_viewers)
+				n_output = name + " - " + filtered_n_title + " - " + n_game + " - " + str(n_viewers)
 				print "[",count,"]",n_output
 				names.append([n_viewers, n_output, name])
 				count = count + 1
