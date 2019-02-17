@@ -6,7 +6,7 @@ offset = 0
 offset_interval = 100
 
 print "----------------------\n-- Followed Streams --\n----------------------"
-url = "https://api.twitch.tv/kraken/users/stupidgeek314/follows/channels?limit=100&client_id=" + clientID
+url = "https://api.twitch.tv/kraken/users/tendersquash/follows/channels?limit=100&client_id=" + clientID
 response = urllib.urlopen(url)
 data = json.loads(response.read())
 follows = data['follows']
@@ -30,7 +30,7 @@ while len(follows) > 0:
 					count = count + 1
 	
 	offset = offset + offset_interval
-	url = "https://api.twitch.tv/kraken/users/stupidgeek314/follows/channels?limit=100&client_id=" + clientID + "&offset=" + str(offset)
+	url = "https://api.twitch.tv/kraken/users/tendersquash/follows/channels?limit=100&client_id=" + clientID + "&offset=" + str(offset)
 	response = urllib.urlopen(url)
 	data = json.loads(response.read())
 	follows = data['follows']
