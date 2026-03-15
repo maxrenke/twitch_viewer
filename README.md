@@ -56,11 +56,10 @@ Opens in VLC (via streamlink) or TwitchTheater.
 
 | File | Description |
 |---|---|
-| `newtwitch.py` | Main script |
-| `tw.bat` | Launcher (calls newtwitch.py) |
+| `twitch.py` | Main script |
+| `tw.bat` | Launcher (calls twitch.py) |
 | `ls.vbs` | Opens a stream in VLC via streamlink |
 | `lsh.bat` | Streamlink wrapper with VLC args |
 | `config.py` | Your credentials — **gitignored, never committed** |
 | `config.example.py` | Template for config.py |
-| `twitch.py` | Original legacy script (Python 2, deprecated) |
 | `kick.py` / `kick.bat` | Kick.com browser (experimental, API unstable) |
