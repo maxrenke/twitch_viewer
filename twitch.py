@@ -205,8 +205,6 @@ else:
         print_row(i + 1, stream, favorite=is_favorite(stream))
 
 hr(chr(9552), 110, Fore.WHITE)
-print()
-
 print(C_HEADER + "  Open in VLC" + C_RESET + "  " + C_STREAM + "(stream numbers, space-separated, blank to skip)" + C_RESET)
 selection = input("  > ")
 
