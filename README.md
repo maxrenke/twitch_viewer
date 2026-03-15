@@ -28,6 +28,13 @@ pip install requests colorama
 
 ## Setup
 
+Run the setup script — it handles everything below automatically:
+```powershell
+pwsh -ExecutionPolicy Bypass -File setup.ps1
+```
+
+Or manually:
+
 1. Copy `config.example.py` to `config.py` and fill in your Twitch credentials:
    - **Client ID + Bearer Token**: [Twitch Developer Console](https://dev.twitch.tv/console)
    - **User ID**: [Find your user ID here](https://www.streamweasels.com/tools/convert-twitch-username-to-user-id/)
