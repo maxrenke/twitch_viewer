@@ -1,4 +1,27 @@
-import subprocess, webbrowser, sys, os, warnings, json, time, ctypes, ctypes.wintypes
+import subprocess, webbrowser, sys, os, warnings, json, time, ctypes, ctypes.wintypes, msvcrt
+
+def read_line(prompt="  > "):
+    """Read a line of input without the CMD newline-after-prompt bug."""
+    sys.stdout.write(prompt)
+    sys.stdout.flush()
+    chars = []
+    while True:
+        ch = msvcrt.getwch()
+        if ch in ('\r', '\n'):
+            sys.stdout.write('\n')
+            sys.stdout.flush()
+            return ''.join(chars)
+        elif ch == '\x08':  # backspace
+            if chars:
+                chars.pop()
+                sys.stdout.write('\x08 \x08')
+                sys.stdout.flush()
+        elif ch == '\x03':  # ctrl+c
+            raise KeyboardInterrupt
+        else:
+            chars.append(ch)
+            sys.stdout.write(ch)
+            sys.stdout.flush()
 from concurrent.futures import ThreadPoolExecutor, as_completed
 warnings.filterwarnings("ignore", message="urllib3")
 import requests
@@ -206,7 +229,7 @@ else:
 
 hr(chr(9552), 110, Fore.WHITE)
 print(C_HEADER + "  Open in VLC" + C_RESET + "  " + C_STREAM + "(stream numbers, space-separated, blank to skip)" + C_RESET)
-selection = input("  > ")
+selection = read_line()
 
 if selection.strip():
     for w in selection.split():
@@ -229,7 +252,7 @@ if selection.strip():
 
 print()
 print(C_HEADER + "  Open in TwitchTheater" + C_RESET + "  " + C_STREAM + "(stream numbers, space-separated)" + C_RESET)
-selection = input("  > ")
+selection = read_line()
 
 wordString = ""
 for w in selection.split():
