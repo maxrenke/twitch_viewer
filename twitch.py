@@ -208,9 +208,7 @@ hr(chr(9552), 110, Fore.WHITE)
 print()
 
 print(C_HEADER + "  Open in VLC" + C_RESET + "  " + C_STREAM + "(stream numbers, space-separated, blank to skip)" + C_RESET)
-sys.stdout.write(C_NUM + "  > " + C_RESET)
-sys.stdout.flush()
-selection = input()
+selection = input("  > ")
 
 if selection.strip():
     for w in selection.split():
@@ -233,9 +231,7 @@ if selection.strip():
 
 print()
 print(C_HEADER + "  Open in TwitchTheater" + C_RESET + "  " + C_STREAM + "(stream numbers, space-separated)" + C_RESET)
-sys.stdout.write(C_NUM + "  > " + C_RESET)
-sys.stdout.flush()
-selection = input()
+selection = input("  > ")
 
 wordString = ""
 for w in selection.split():
