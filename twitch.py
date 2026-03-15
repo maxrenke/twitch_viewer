@@ -227,38 +227,53 @@ else:
     for i, stream in enumerate(stream_list):
         print_row(i + 1, stream, favorite=is_favorite(stream))
 
-hr(chr(9552), 110, Fore.WHITE)
-print(C_HEADER + "  Open in VLC" + C_RESET + "  " + C_STREAM + "(stream numbers, space-separated, blank to skip)" + C_RESET)
-selection = read_line()
-
-if selection.strip():
-    for w in selection.split():
+def parse_selection(raw, stream_list):
+    """Parse a space-separated string of stream numbers. Returns list of valid indices, prints errors for bad ones."""
+    valid = []
+    for w in raw.split():
         try:
-            stream_index = int(w) - 1
-            if not (0 <= stream_index < len(stream_list)):
-                print(Fore.RED + f"  x Invalid: {w} (valid 1-{len(stream_list)})" + C_RESET)
-                continue
-            wstring = stream_list[stream_index]["user_login"]
-            print(Fore.GREEN + f"  > Opening {wstring} in VLC..." + C_RESET)
-            if not os.path.exists("ls.vbs"):
-                print(Fore.RED + "  x ls.vbs not found" + C_RESET)
-                continue
-            subprocess.call(f"cmd.exe /c start ls.vbs {wstring} best", shell=True)
+            idx = int(w) - 1
+            if not (0 <= idx < len(stream_list)):
+                print(Fore.RED + f"  x {w} out of range (valid 1-{len(stream_list)})" + C_RESET)
+            else:
+                valid.append(idx)
         except ValueError:
-            print(Fore.RED + f"  x '{w}' is not a valid number" + C_RESET)
-        except Exception as e:
-            print(Fore.RED + f"  x Error: {e}" + C_RESET)
+            print(Fore.RED + f"  x '{w}' is not a number — skipping" + C_RESET)
+    return valid
+
+hr(chr(9552), 110, Fore.WHITE)
+print(C_STREAM + "  Enter stream numbers below. Blank VLC → skip to TwitchTheater. Blank both → exit." + C_RESET)
+print()
+print(C_HEADER + "  Open in VLC" + C_RESET + "  " + C_STREAM + "(space-separated, blank to skip)" + C_RESET)
+vlc_selection = read_line()
+
+if vlc_selection.strip():
+    indices = parse_selection(vlc_selection, stream_list)
+    if not indices:
+        print(Fore.RED + "  x No valid streams selected." + C_RESET)
+    else:
+        ls_vbs = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ls.vbs")
+        if not os.path.exists(ls_vbs):
+            print(Fore.RED + f"  x ls.vbs not found at {ls_vbs}" + C_RESET)
+        else:
+            for idx in indices:
+                wstring = stream_list[idx]["user_login"]
+                print(Fore.GREEN + f"  > Opening {wstring} in VLC..." + C_RESET)
+                subprocess.call(f'cmd.exe /c start "" "{ls_vbs}" {wstring} best', shell=True)
     sys.exit()
 
 print()
-print(C_HEADER + "  Open in TwitchTheater" + C_RESET + "  " + C_STREAM + "(stream numbers, space-separated)" + C_RESET)
-selection = read_line()
+print(C_HEADER + "  Open in TwitchTheater" + C_RESET + "  " + C_STREAM + "(space-separated, blank to exit)" + C_RESET)
+tt_selection = read_line()
 
-wordString = ""
-for w in selection.split():
-    wordString += "/" + stream_list[int(w) - 1]["user_login"]
+if not tt_selection.strip():
+    sys.exit()
 
-if wordString:
-    tturl = "www.twitchtheater.tv" + wordString
+indices = parse_selection(tt_selection, stream_list)
+if not indices:
+    print(Fore.RED + "  x No valid streams selected." + C_RESET)
+else:
+    word_string = "".join("/" + stream_list[idx]["user_login"] for idx in indices)
+    tturl = "www.twitchtheater.tv" + word_string
     print(Fore.GREEN + f"  > Opening {tturl}" + C_RESET)
     webbrowser.open(tturl)
