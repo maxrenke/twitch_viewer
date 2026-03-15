@@ -75,14 +75,10 @@ def fetch_login():
     except Exception:
         return None
 
-def banner(login=None):
+def banner():
     print()
     print(C_TITLE + "  TWITCH LIVE".center(110))
     hr(chr(9552), 110, Fore.WHITE)
-    if login:
-        print(C_STREAM + f"  logged in as: {login}" + C_RESET)
-    else:
-        print(Fore.RED + "  not logged in — fill in config.py with your credentials" + C_RESET)
 
 def fmt_viewers(n):
     if n >= 1000:
@@ -152,16 +148,28 @@ by_game = "--no-game" not in sys.argv and "-G" not in sys.argv
 
 login = fetch_login()
 resize_terminal(len(stream_list))
-banner(login)
+banner()
 
 if cache_used:
     import datetime
     with open(CACHE_FILE) as f:
         ts = json.load(f)["timestamp"]
     age_str = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M")
-    print(C_STREAM + f"  follows: cached ({age_str})  |  run with -r to refresh" + C_RESET)
+    left = f"  follows: cached ({age_str})  |  run with -r to refresh"
 else:
-    print(C_STREAM + f"  follows: refreshed ({len(followed_ids)} channels cached)" + C_RESET)
+    left = f"  follows: refreshed ({len(followed_ids)} channels cached)"
+
+if login:
+    right = f"logged in as: {login}  "
+else:
+    right = "not logged in — see config.py  "
+
+# Right-align login info on the same line as follows, within 110 chars
+line = left + right.rjust(110 - len(left))
+if login:
+    print(C_STREAM + line + C_RESET)
+else:
+    print(C_STREAM + left + Fore.RED + right.rjust(110 - len(left)) + C_RESET)
 print()
 IDX_W  = 4
 NAME_W = 16
