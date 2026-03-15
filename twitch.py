@@ -80,6 +80,40 @@ def banner():
     print(C_TITLE + "  TWITCH LIVE".center(110))
     hr(chr(9552), 110, Fore.WHITE)
 
+def clean_title(text):
+    """Replace colored emoji with plain unicode placeholders, drop the rest."""
+    import unicodedata
+    REPLACEMENTS = {
+        '\U0001f525': '[~]',   # 🔥 fire
+        '\U0001f4a5': '[!]',   # 💥 explosion
+        '\U0001f3c6': '[*]',   # 🏆 trophy
+        '\U0001f4af': '[%]',   # 💯 100
+        '\u2764':     '<3',    # ❤ heart
+        '\U0001f499': '<3',    # 💙 blue heart
+        '\U0001f49c': '<3',    # 💜 purple heart
+        '\U0001f49a': '<3',    # 💚 green heart
+        '\U0001f34e': '[o]',   # 🍎
+        '\U0001f480': '[x]',   # 💀 skull
+        '\u26a1':     '[z]',   # ⚡ lightning
+        '\u2b50':     '[*]',   # ⭐ star
+        '\U0001f31f': '[*]',   # 🌟 glowing star
+        '\U0001f3b5': '[♪]',   # 🎵 music note
+        '\U0001f3b6': '[♪]',   # 🎶 music notes
+        '\U0001f6ab': '[no]',  # 🚫
+        '\U0001f4e2': '[!]',   # 📢 megaphone
+        '\U0001f4a1': '[i]',   # 💡 bulb
+    }
+    result = []
+    for ch in text:
+        if ch in REPLACEMENTS:
+            result.append(REPLACEMENTS[ch])
+        else:
+            cat = unicodedata.category(ch)
+            if cat.startswith(('L', 'N', 'P', 'Z')) or cat in ('Sm', 'Sc') or ch in (' ', '\t'):
+                result.append(ch)
+            # else drop unknown emoji/symbols
+    return ''.join(result).strip()
+
 def fmt_viewers(n):
     if n >= 1000:
         return f"{n/1000:.1f}k"
@@ -213,7 +247,7 @@ def print_row(i, stream, favorite=False):
         c_name = C_NAME
     drops      = any(t.lower() == "dropsenabled" for t in (stream.get("tags") or []))
     drop_pfx   = Fore.YELLOW + "★ " + C_RESET if drops else "  "
-    raw_title  = stream["title"][:TTL_W]
+    raw_title  = clean_title(stream["title"])[:TTL_W]
     raw_title  = f"{raw_title:<{TTL_W}}"
     idx   = C_NUM     + f"{i:>{IDX_W}}" + C_RESET
     name  = c_name    + f"{stream['user_name']:<{NAME_W}}" + C_RESET
