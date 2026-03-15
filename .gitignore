@@ -1,0 +1,11 @@
+# Credentials — never commit
+config.py
+
+# Cache file generated at runtime
+twitch_followed_cache.json
+
+# IDE / tooling
+.gmap/
+.pyscn/
+__pycache__/
+*.pyc
