@@ -42,12 +42,10 @@ C_RESET    = Style.RESET_ALL
 def hr(char=chr(9472), width=110, color=Fore.WHITE + Style.DIM):
     print(color + char * width + C_RESET)
 
-def resize_terminal(n_streams, by_game_mode):
-    # Fixed rows: banner(2) + cache line(1) + blank(1) + header(2) + footer(3) + prompts(4) + slack(3)
-    FIXED_ROWS = 16
-    # In by-game mode each game adds a header bar row; rough estimate: assume avg 2 streams/game
-    extra = (n_streams // 2) if by_game_mode else 0
-    rows = FIXED_ROWS + n_streams + extra
+def resize_terminal(n_streams):
+    # Fixed rows: banner(2) + login(1) + cache(1) + blank(1) + header(2) + explainer(1) + footer(3) + prompts(4) + slack(3)
+    FIXED_ROWS = 18
+    rows = FIXED_ROWS + n_streams
     cols = 114  # 110 content + 4 for prefix icons/padding
 
     k32 = ctypes.windll.kernel32
@@ -66,18 +64,37 @@ def resize_terminal(n_streams, by_game_mode):
     win = SMALL_RECT(0, 0, cols - 1, rows - 1)
     k32.SetConsoleWindowInfo(STDOUT, True, ctypes.byref(win))
 
-def banner():
+def fetch_login():
+    """Return the logged-in username, or None on failure."""
+    if not CLIENT_ID:
+        return None
+    try:
+        r = requests.get("https://api.twitch.tv/helix/users", headers=API_HDR, timeout=5)
+        data = r.json().get("data", [])
+        return data[0]["login"] if data else None
+    except Exception:
+        return None
+
+def banner(login=None):
     print()
     print(C_TITLE + "  TWITCH LIVE".center(110))
     hr(chr(9552), 110, Fore.WHITE)
+    if login:
+        print(C_STREAM + f"  logged in as: {login}" + C_RESET)
+    else:
+        print(Fore.RED + "  not logged in — fill in config.py with your credentials" + C_RESET)
 
 def fmt_viewers(n):
     if n >= 1000:
         return f"{n/1000:.1f}k"
     return str(n)
 
-from config import CLIENT_ID, BEARER_TOKEN, USER_ID
-API_HDR    = {"Client-ID": CLIENT_ID, "Authorization": f"Bearer {BEARER_TOKEN}"}
+try:
+    from config import CLIENT_ID, BEARER_TOKEN, USER_ID
+except ImportError:
+    CLIENT_ID = BEARER_TOKEN = USER_ID = None
+
+API_HDR    = {"Client-ID": CLIENT_ID, "Authorization": f"Bearer {BEARER_TOKEN}"} if CLIENT_ID else {}
 CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "twitch_followed_cache.json")
 CACHE_TTL  = 24 * 60 * 60  # seconds
 
@@ -133,8 +150,9 @@ with ThreadPoolExecutor() as executor:
 
 by_game = "--no-game" not in sys.argv and "-G" not in sys.argv
 
-resize_terminal(len(stream_list), by_game)
-banner()
+login = fetch_login()
+resize_terminal(len(stream_list))
+banner(login)
 
 if cache_used:
     import datetime
@@ -255,11 +273,11 @@ if vlc_selection.strip():
         ls_vbs = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ls.vbs")
         if not os.path.exists(ls_vbs):
             print(Fore.RED + f"  x ls.vbs not found at {ls_vbs}" + C_RESET)
-        else:
-            for idx in indices:
-                wstring = stream_list[idx]["user_login"]
-                print(Fore.GREEN + f"  > Opening {wstring} in VLC..." + C_RESET)
-                subprocess.call(f'cmd.exe /c start "" "{ls_vbs}" {wstring} best', shell=True)
+            sys.exit(1)
+        for idx in indices:
+            wstring = stream_list[idx]["user_login"]
+            print(Fore.GREEN + f"  > Opening {wstring} in VLC..." + C_RESET)
+            subprocess.call(f'cmd.exe /c start "" "{ls_vbs}" {wstring} best', shell=True)
     sys.exit()
 
 print()
