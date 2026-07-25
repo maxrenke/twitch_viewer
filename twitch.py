@@ -78,6 +78,29 @@ def hr(char=chr(9472), width=WIDTH, color=Fore.WHITE + Style.DIM):
 def fmt_viewers(n):
     return f"{n/1000:.1f}k" if n >= 1000 else str(n)
 
+def char_width(ch):
+    eaw = unicodedata.east_asian_width(ch)
+    return 2 if eaw in ('W', 'F') else 1
+
+def display_width(s):
+    return sum(char_width(c) for c in s)
+
+def trunc_to_width(s, max_w):
+    """Truncate string so its display width <= max_w."""
+    result, w = [], 0
+    for ch in s:
+        cw = char_width(ch)
+        if w + cw > max_w:
+            break
+        result.append(ch)
+        w += cw
+    return ''.join(result)
+
+def ljust_display(s, width):
+    """Left-justify s in a field of given display width."""
+    s = trunc_to_width(s, width)
+    return s + ' ' * (width - display_width(s))
+
 def clean_title(text):
     """Replace colored emoji with plain placeholders, drop the rest."""
     result = []
@@ -261,11 +284,11 @@ def print_row(i, stream, favorite=False):
     c_name  = (Fore.YELLOW + Style.BRIGHT) if favorite else C_NAME
     drops   = any(t.lower() == "dropsenabled" for t in (stream.get("tags") or []))
     drop_pfx = Fore.YELLOW + "★ " + C_RESET if drops else "  "
-    raw_title = f"{clean_title(stream['title'])[:TTL_W]:<{TTL_W}}"
+    raw_title = ljust_display(clean_title(stream['title']), TTL_W)
     idx   = C_NUM     + f"{i:>{IDX_W}}" + C_RESET
-    name  = c_name    + f"{stream['user_name']:<{NAME_W}}" + C_RESET
+    name  = c_name    + ljust_display(stream['user_name'], NAME_W) + C_RESET
     views = C_VIEWERS + f"{fmt_viewers(stream['viewer_count']):>{VIEW_W}}" + C_RESET
-    game  = C_GAME    + f"{stream['game_name'][:GAME_W]:<{GAME_W}}" + C_RESET
+    game  = C_GAME    + ljust_display(stream['game_name'], GAME_W) + C_RESET
     title = drop_pfx + C_STREAM + raw_title + C_RESET
     print(f"{prefix}{idx}  {name}  {views}  {game}  {title}")
 

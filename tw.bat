@@ -1,5 +1,5 @@
 @echo off
-python "%~dp0twitch.py" %*
+"C:\Users\m_ren\AppData\Local\Programs\Python\Python313\python.exe" "%~dp0twitch.py" %*
 if %ERRORLEVEL% neq 0 (
     echo ERROR: twitch.py failed with error code %ERRORLEVEL%
     pause

@@ -9,3 +9,5 @@ twitch_followed_cache.json
 .pyscn/
 __pycache__/
 *.pyc
+
+.claude/

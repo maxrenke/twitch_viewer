@@ -2,7 +2,7 @@
 :: Kick.com Stream Browser Launcher
 :: This script launches the Python-based Kick stream browser
 
-python "%~dp0kick.py"
+"C:\Users\m_ren\AppData\Local\Programs\Python\Python313\python.exe" "%~dp0kick.py"
 
 if errorlevel 1 (
     echo.
