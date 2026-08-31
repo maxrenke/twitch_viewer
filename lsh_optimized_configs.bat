@@ -5,6 +5,7 @@
 :: Config 2: Balanced CPU/GPU  
 :: Config 3: Ultra low resource
 :: Config 4: Audio-only mode
+:: Config 5: Hardware decode, low latency
 
 set channel=%1
 set quality=%2
@@ -18,6 +19,7 @@ if "%config%"=="1" goto :minimal_gpu
 if "%config%"=="2" goto :balanced
 if "%config%"=="3" goto :ultra_low
 if "%config%"=="4" goto :audio_only
+if "%config%"=="5" goto :hw_lowlatency
 
 :minimal_gpu
 echo Configuration 1: Minimal GPU Usage
@@ -37,4 +39,11 @@ exit
 :audio_only
 echo Configuration 4: Audio Only Mode
 streamlink --player-args="--no-video-title --avcodec-hw none --vout dummy --aout directsound --network-caching=1000 --live-caching=500 --no-video --audio-only --priority low --threads 1" --stream-segment-attempts 2 --stream-segment-timeout 15 --stream-timeout 90 --retry-streams 1 --retry-max 2 --player-continuous-http twitch.tv/%channel% audio_only >nul 2>&1
+exit
+
+:hw_lowlatency
+:: Opposite trade to config 1: hardware decode ON and caching cut to a third,
+:: for a GPU that has headroom and a viewer who wants to be near-live.
+echo Configuration 5: Hardware Decode, Low Latency
+streamlink --player-args="--no-video-title --avcodec-hw any --network-caching=1000 --live-caching=500 --no-audio-time-stretch --drop-late-frames --skip-frames" --stream-segment-attempts 3 --stream-segment-timeout 10 --stream-timeout 60 --retry-streams 2 --retry-max 3 --player-continuous-http twitch.tv/%channel% %quality% >nul 2>&1
 exit
