@@ -1,5 +1,7 @@
 # setup.ps1 — twitch_viewer first-time setup
-# Copies tw.bat to your home directory so you can launch via Win+R
+# Installs a forwarding shim for every Win+R-launched script into your home
+# directory (Win+R runs through Explorer, which only sees things on PATH or
+# physically in %USERPROFILE% - the repo folder alone isn't enough).
 # Also sets up config.py from the example template if not already present
 #
 # Usage: right-click setup.ps1 -> "Run with PowerShell"
@@ -28,17 +30,38 @@ if (Test-Path $configDest) {
 
 Write-Host ""
 
-# --- Step 2: tw.bat -> home dir ---
-$twSrc  = Join-Path $repoDir "tw.bat"
-$twDest = Join-Path $homeDir "tw.bat"
+# --- Step 2: Win+R shims -> home dir ---
+# tw.bat forwards to twitch.py directly (it's the only one that needs a real
+# python invocation, not just a re-dispatch); everything else is a thin
+# `call`/`Run` forward to the repo copy so there is one source of truth.
 
-# Generate a tw.bat that points to THIS repo location
 $twContent = "@echo off`npython `"$repoDir\twitch.py`" %*`nif %ERRORLEVEL% neq 0 (`n    echo ERROR: twitch.py failed with error code %ERRORLEVEL%`n    pause`n    exit /b %ERRORLEVEL%`n)"
+Set-Content -Path (Join-Path $homeDir "tw.bat") -Value $twContent -Encoding ASCII
 
-Set-Content -Path $twDest -Value $twContent -Encoding ASCII
+$batShims = "kick.bat", "live.bat", "lsh.bat", "lsh_optimized_configs.bat", "lshk.bat", "kickplay.bat"
+foreach ($name in $batShims) {
+    $content = "@echo off`ncall `"$repoDir\$name`" %*"
+    Set-Content -Path (Join-Path $homeDir $name) -Value $content -Encoding ASCII
+}
 
-Write-Host "  [ok] Installed tw.bat to $homeDir" -ForegroundColor Green
-Write-Host "       You can now run 'tw' from Win+R" -ForegroundColor DarkGray
+$vbsShims = "ls.vbs", "ls_optimized.vbs", "lsk.vbs", "kick.vbs"
+foreach ($name in $vbsShims) {
+    $target = "$repoDir\$name"
+    $content = "' Forwarding shim: real script lives in $target`n" +
+        "Dim WshShell, target, args, i`n" +
+        "Set WshShell = CreateObject(`"WScript.Shell`")`n" +
+        "target = `"$target`"`n" +
+        "args = `"`"`n" +
+        "For i = 0 To WScript.Arguments.Count - 1`n" +
+        "    args = args & `" `" & Chr(34) & WScript.Arguments(i) & Chr(34)`n" +
+        "Next`n" +
+        "WshShell.Run Chr(34) & target & Chr(34) & args, 0, True`n" +
+        "Set WshShell = Nothing`n"
+    Set-Content -Path (Join-Path $homeDir $name) -Value $content -Encoding ASCII
+}
+
+Write-Host "  [ok] Installed $($batShims.Count + $vbsShims.Count + 1) Win+R shims to $homeDir" -ForegroundColor Green
+Write-Host "       tw, kick, live, lsh, lsh_optimized_configs, lshk, kickplay, ls, ls_optimized, lsk, kick(.vbs)" -ForegroundColor DarkGray
 
 Write-Host ""
 

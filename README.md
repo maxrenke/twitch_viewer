@@ -65,8 +65,16 @@ Opens in VLC (via streamlink) or TwitchTheater.
 |---|---|
 | `twitch.py` | Main script |
 | `tw.bat` | Launcher (calls twitch.py) |
-| `ls.vbs` | Opens a stream in VLC via streamlink |
-| `lsh.bat` | Streamlink wrapper with VLC args |
+| `ls.vbs` / `ls_optimized.vbs` | Opens a stream in VLC via streamlink, hidden window (optimized variant takes a config number) |
+| `lsh.bat` / `lsh_optimized_configs.bat` | Streamlink wrapper with VLC args (optimized variant has 5 performance profiles) |
+| `lsk.vbs` / `lshk.bat` | Same as `ls`/`lsh` but for kick.com |
 | `config.py` | Your credentials — **gitignored, never committed** |
 | `config.example.py` | Template for config.py |
-| `kick.py` / `kick.bat` | Kick.com browser (experimental, API unstable) |
+| `kick.py` / `kick.bat` / `kick.vbs` / `kickplay.bat` | Kick.com browser and playback (experimental, API unstable) |
+| `getoauthtoken.py` | Local callback server to capture a Twitch OAuth token |
+| `m3u8.py` | Fetches an IVS m3u8 playlist with browser headers |
+| `live.bat` | Legacy livestreamer launcher |
+
+All of the above are only meant to be run **from this repo directory** — `setup.ps1`
+installs a Win+R shim for each into your home folder (see Setup). Editing a script
+here is enough; the shims just forward.
