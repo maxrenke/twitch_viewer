@@ -341,7 +341,7 @@ if vlc_selection.strip():
             print(Fore.GREEN + f"  > Opening {wstring} in VLC..." + C_RESET)
             #subprocess.call(f'cmd.exe /c start "" "{ls_vbs}" {wstring} best', shell=True)
             subprocess.call(
-                rf'wscript.exe "{ls_vbs}" {wstring} best',
+                rf'wscript.exe "{ls_vbs}" {wstring} 1440p60,best',
                 shell=True
             )
 
