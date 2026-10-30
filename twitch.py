@@ -338,6 +338,14 @@ if vlc_selection.strip():
             sys.exit(1)
         for idx in indices:
             wstring = stream_list[idx]["user_login"]
+            check = subprocess.run(
+                ["streamlink", "--stream-url", f"twitch.tv/{wstring}", "best"],
+                capture_output=True, text=True,
+            )
+            if check.returncode != 0:
+                hint = " - hey go run: tw -r" if cache_used else ""
+                print(Fore.RED + f"  x {wstring} has no playable stream (offline or stale list){hint}" + C_RESET)
+                continue
             print(Fore.GREEN + f"  > Opening {wstring} in VLC..." + C_RESET)
             #subprocess.call(f'cmd.exe /c start "" "{ls_vbs}" {wstring} best', shell=True)
             subprocess.call(
