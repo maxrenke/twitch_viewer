@@ -1,4 +1,4 @@
-import subprocess, webbrowser, sys, os, warnings, json, time, ctypes, ctypes.wintypes, msvcrt
+import shutil, subprocess, webbrowser, sys, os, warnings, json, time, ctypes, ctypes.wintypes, msvcrt
 from concurrent.futures import ThreadPoolExecutor, as_completed
 warnings.filterwarnings("ignore", message="urllib3")
 import requests, unicodedata
@@ -336,13 +336,20 @@ if vlc_selection.strip():
         if not os.path.exists(ls_vbs):
             print(Fore.RED + f"  x ls.vbs not found at {ls_vbs}" + C_RESET)
             sys.exit(1)
+        streamlink_exe = (
+            shutil.which("streamlink")
+            or os.path.join(os.environ.get("ProgramFiles", ""), "Streamlink", "bin", "streamlink.exe")
+        )
         for idx in indices:
             wstring = stream_list[idx]["user_login"]
-            check = subprocess.run(
-                ["streamlink", "--stream-url", f"twitch.tv/{wstring}", "best"],
-                capture_output=True, text=True,
-            )
-            if check.returncode != 0:
+            try:
+                check = subprocess.run(
+                    [streamlink_exe, "--stream-url", f"twitch.tv/{wstring}", "best"],
+                    capture_output=True, text=True,
+                )
+            except OSError:
+                check = None  # streamlink not found - skip the pre-check, let lsh.bat try
+            if check and check.returncode != 0:
                 hint = " - hey go run: tw -r" if cache_used else ""
                 print(Fore.RED + f"  x {wstring} has no playable stream (offline or stale list){hint}" + C_RESET)
                 continue
