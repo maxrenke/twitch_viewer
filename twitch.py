@@ -164,7 +164,7 @@ except ImportError:
 
 API_HDR    = {"Client-ID": CLIENT_ID, "Authorization": f"Bearer {BEARER_TOKEN}"} if CLIENT_ID else {}
 CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "twitch_followed_cache.json")
-CACHE_TTL  = 24 * 60 * 60  # seconds
+CACHE_TTL  = 2 * 60 * 60  # seconds
 
 force_refresh = "--refresh" in sys.argv or "-r" in sys.argv
 by_game       = "--no-game" not in sys.argv and "-G" not in sys.argv
