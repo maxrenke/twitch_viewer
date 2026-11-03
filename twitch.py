@@ -166,7 +166,7 @@ API_HDR    = {"Client-ID": CLIENT_ID, "Authorization": f"Bearer {BEARER_TOKEN}"}
 CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "twitch_followed_cache.json")
 CACHE_TTL  = 2 * 60 * 60  # seconds
 
-force_refresh = "--refresh" in sys.argv or "-r" in sys.argv
+force_refresh = "--cached" not in sys.argv and "-c" not in sys.argv  # refresh by default; -r/--refresh still accepted
 by_game       = "--no-game" not in sys.argv and "-G" not in sys.argv
 
 # --- API fetch functions ---
@@ -243,7 +243,7 @@ if cache_used:
     with open(CACHE_FILE) as f:
         ts = json.load(f)["timestamp"]
     age_str = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M")
-    left = f"  follows: cached ({age_str})  |  run with -r to refresh"
+    left = f"  follows: cached ({age_str})  |  run without -c to refresh"
 else:
     left = f"  follows: refreshed ({len(followed_ids)} channels cached)"
 
@@ -350,7 +350,7 @@ if vlc_selection.strip():
             except OSError:
                 check = None  # streamlink not found - skip the pre-check, let lsh.bat try
             if check and check.returncode != 0:
-                hint = " - hey go run: tw -r" if cache_used else ""
+                hint = " - hey go run: tw (without -c)" if cache_used else ""
                 print(Fore.RED + f"  x {wstring} has no playable stream (offline or stale list){hint}" + C_RESET)
                 continue
             print(Fore.GREEN + f"  > Opening {wstring} in VLC..." + C_RESET)

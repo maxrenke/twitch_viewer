@@ -14,7 +14,7 @@ pick streams to open in VLC or TwitchTheater.
 - Game-grouped view by default (`--no-game` / `-G` for flat list)
 - Drops-enabled streams flagged with a ★
 - Opens streams in VLC via streamlink, or in TwitchTheater for multi-stream
-- Followed channel list cached for 2h (run with `-r` to force refresh)
+- Followed channel list refreshed on every run (`--cached` / `-c` to reuse the 2h cache)
 
 ## Dependencies
 
@@ -52,7 +52,7 @@ Or manually:
 
 ```
 tw              # launch (game-grouped by default)
-tw -r           # force refresh followed channel cache
+tw -c           # use the cached followed channel list (2h) instead of refreshing
 tw --no-game    # flat list sorted by viewers
 ```
 
