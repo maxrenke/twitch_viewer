@@ -1,5 +1,8 @@
 @echo off
 
+rem Explorer/Run-dialog launches can have a stale PATH without streamlink
+set "PATH=%PATH%;%LOCALAPPDATA%\Programs\Streamlink\bin;%ProgramFiles%\Streamlink\bin"
+
 streamlink ^
   --twitch-low-latency ^
   --stream-segment-attempts 5 ^

@@ -338,7 +338,7 @@ if vlc_selection.strip():
             sys.exit(1)
         streamlink_exe = (
             shutil.which("streamlink")
-            or os.path.join(os.environ.get("ProgramFiles", ""), "Streamlink", "bin", "streamlink.exe")
+            or os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "Streamlink", "bin", "streamlink.exe")
         )
         for idx in indices:
             wstring = stream_list[idx]["user_login"]
